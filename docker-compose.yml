@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: aegis_postgres
+    environment:
+      POSTGRES_USER: aegis_user
+      POSTGRES_PASSWORD: aegis_password
+      POSTGRES_DB: aegis_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: aegis_redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: aegis_chromadb
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: aegis_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    # IMPORTANT: To utilize your RTX 4070, uncomment the deploy section below.
+    # Requires Docker NVIDIA Toolkit installed on the host.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    container_name: aegis_server
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - POSTGRES_URL=postgresql://aegis_user:aegis_password@postgres:5432/aegis_db
+      - CHROMADB_URL=http://chromadb:8000
+      - OLLAMA_URL=http://ollama:11434
+    depends_on:
+      - redis
+      - postgres
+      - chromadb
+    restart: unless-stopped
+
+  simulator:
+    build:
+      context: .
+      dockerfile: apps/simulator/Dockerfile
+    container_name: aegis_simulator
+    ports:
+      - "8001:8001"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: aegis_web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_WS_URL=ws://localhost:8080/ws
+      - NEXT_PUBLIC_API_URL=http://localhost:8080/api
+    depends_on:
+      - server
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  chroma_data:
+  ollama_data:

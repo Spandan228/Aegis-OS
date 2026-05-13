@@ -1,0 +1,28 @@
+# Environments
+venv/
+env/
+.env
+
+# Node
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Project Specific
+redis/
+redis.zip
+server_debug.log
