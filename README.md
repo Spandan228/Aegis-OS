@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://via.placeholder.com/150" alt="Aegis OS Logo" width="150" height="150">
+  <img src="https://via.placeholder.com/150" alt="Aegis OS" width="150" height="150">
 
   # Aegis OS 🛡️
   
