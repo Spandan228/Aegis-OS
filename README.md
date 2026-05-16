@@ -60,6 +60,21 @@ Follow these steps to set up Aegis OS locally.
    cd aegis-os
    ```
 
+### Deployment Options
+
+**Option 1: Universal CPU & Hugging Face Spaces (Default)**
+For computers without a dedicated Nvidia GPU or for deploying a live demo:
+- **No local Docker required for Cloud Deploy:** You can upload this repository directly to a new Hugging Face Docker Space. Hugging Face will automatically use `Dockerfile.hf` (you may need to rename it to `Dockerfile` in the space settings) and build/run the entire environment on their servers.
+- **To test locally (Optional):** If you want to verify the setup on your own PC before uploading, you can use: `docker-compose up -d --build`
+- **Important Note:** Pure CPU inference is very slow. In your Hugging Face Space settings, add `USE_GROQ=true` and your `GROQ_API_KEY` as environment variables for lightning-fast external LLM inference.
+
+**Option 2: High-Performance GPU Setup**
+If you have a dedicated NVIDIA GPU (e.g., RTX 4070) with the Docker NVIDIA Toolkit installed:
+- Use the dedicated GPU configuration:
+  ```bash
+  docker-compose -f docker-compose.gpu.yml up -d --build
+  ```
+
 2. **Start the Redis Server**
    Ensure your local Redis server is running on the default port `6379`.
 

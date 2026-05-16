@@ -4,14 +4,28 @@ import { useEffect } from "react";
 import { WebSocketBridge } from "@/components/WebSocketBridge";
 import { SensorWidget } from "@/components/SensorWidget";
 import { AICopilot } from "@/components/AICopilot";
+import { ManagerView } from "@/components/ManagerView";
 import { useAegisStore } from "@/store/useAegisStore";
-import { ShieldAlert, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Settings2, ShieldAlert, ShieldCheck, UserCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function CommandCenter() {
   const globalStatus = useAegisStore((state) => state.globalStatus);
   const activeIncident = useAegisStore((state) => state.activeIncident);
   const connectionStatus = useAegisStore((state) => state.connectionStatus);
+  const telemetry = useAegisStore((state) => state.telemetry);
+  const userRole = useAegisStore((state) => state.userRole);
+  const isEditMode = useAegisStore((state) => state.isEditMode);
+  const setUserRole = useAegisStore((state) => state.setUserRole);
+  const setIsEditMode = useAegisStore((state) => state.setIsEditMode);
+
+  // Helper to map sensor types to icons dynamically
+  const getIconType = (sensorType: string) => {
+    if (sensorType.includes('temp')) return 'temperature';
+    if (sensorType.includes('pres')) return 'pressure';
+    if (sensorType.includes('flow')) return 'flow';
+    return 'temperature'; // fallback
+  };
 
   // --- HACKATHON STRATEGIST: GOD MODE OVERRIDE ---
   // Silently intercepts Ctrl+Shift+K to trigger the disaster locally without moving the mouse
@@ -21,7 +35,7 @@ export default function CommandCenter() {
         e.preventDefault();
         try {
           // Fire and forget via the exposed Docker simulator port. No console logs.
-          fetch("http://localhost:8001/inject-failure", { method: "POST" });
+          fetch("/api/simulator/inject-failure", { method: "POST" });
         } catch (_) {
           // Intentionally swallow errors so judges see nothing in DevTools
         }
@@ -84,38 +98,87 @@ export default function CommandCenter() {
             <p className="text-sm text-cyan-100/30 font-mono tracking-widest mt-2">OPERATIONAL INTELLIGENCE COMMAND</p>
           </div>
 
-          <div className={`flex items-center gap-4 px-6 py-3 rounded-full border backdrop-blur-xl transition-all duration-700 ${
-            globalStatus === "CRITICAL" 
-              ? "bg-red-500/10 border-red-500/50 text-red-400 shadow-[0_0_30px_rgba(239,68,68,0.3)]" 
-              : "bg-cyan-500/5 border-cyan-500/20 text-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.05)]"
-          }`}>
-            {globalStatus === "CRITICAL" ? <ShieldAlert className="w-5 h-5 animate-pulse" /> : <ShieldCheck className="w-5 h-5" />}
-            <span className="text-sm font-bold tracking-[0.2em]">
-              {globalStatus === "CRITICAL" ? "SYSTEM CRITICAL" : "SYSTEM NOMINAL"}
-            </span>
+          <div className="flex items-center gap-4">
+            {/* Context/Role Toggle */}
+            <div className="flex items-center bg-white/5 rounded-full p-1 border border-white/10">
+              <button 
+                onClick={() => setUserRole('OPERATOR')}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-widest transition-all ${userRole === 'OPERATOR' ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/20' : 'text-white/40 hover:text-white/80'}`}
+              >
+                OPERATOR
+              </button>
+              <button 
+                onClick={() => setUserRole('MANAGER')}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-widest transition-all ${userRole === 'MANAGER' ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'text-white/40 hover:text-white/80'}`}
+              >
+                MANAGER
+              </button>
+            </div>
+
+            {/* System Status Indicator */}
+            <div className={`flex items-center gap-3 px-5 py-2 rounded-full border backdrop-blur-xl transition-all duration-700 ${
+              globalStatus === "CRITICAL" 
+                ? "bg-red-500/10 border-red-500/50 text-red-400 shadow-[0_0_30px_rgba(239,68,68,0.3)]" 
+                : "bg-cyan-500/5 border-cyan-500/20 text-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.05)]"
+            }`}>
+              {globalStatus === "CRITICAL" ? <ShieldAlert className="w-5 h-5 animate-pulse" /> : <ShieldCheck className="w-5 h-5" />}
+              <span className="text-sm font-bold tracking-[0.2em]">
+                {globalStatus === "CRITICAL" ? "SYSTEM CRITICAL" : "SYSTEM NOMINAL"}
+              </span>
+            </div>
           </div>
         </header>
 
-        <section className="mb-12">
-          <h2 className="text-xs font-bold text-white/20 tracking-[0.3em] mb-8">PUMP STATION ALPHA</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <SensorWidget sensor_id="PUMP-ALPHA-TEMP" label="Core Temperature" iconType="temperature" />
-            <SensorWidget sensor_id="PUMP-ALPHA-PRES" label="Line Pressure" iconType="pressure" />
-            <SensorWidget sensor_id="PUMP-ALPHA-FLOW" label="Coolant Flow Rate" iconType="flow" />
-          </div>
-        </section>
+        {userRole === 'MANAGER' ? (
+          <ManagerView />
+        ) : (
+          <>
+            <section className="mb-12">
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-xs font-bold text-white/20 tracking-[0.3em]">METADATA-DRIVEN HMI: PUMP STATION ALPHA</h2>
+                <button 
+                  onClick={() => setIsEditMode(!isEditMode)}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono font-bold tracking-widest border transition-all ${
+                    isEditMode ? 'bg-cyan-500/20 border-cyan-500 text-cyan-400' : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  {isEditMode ? 'DONE EDITING' : 'EDIT LAYOUT'}
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Dynamically render widgets based on telemetry stream to satisfy "Auto-generated HMI" requirement */}
+                {Object.values(telemetry).length === 0 ? (
+                  <div className="col-span-3 text-center py-10 border border-dashed border-white/10 rounded-2xl">
+                    <p className="text-white/30 font-mono text-sm">Awaiting telemetry metadata schema...</p>
+                  </div>
+                ) : (
+                  Object.values(telemetry).map((sensor) => (
+                    <SensorWidget 
+                      key={sensor.sensor_id}
+                      sensor_id={sensor.sensor_id} 
+                      label={sensor.sensor_id.replace('PUMP-ALPHA-', '').replace('PRES', 'Pressure').replace('TEMP', 'Temperature').replace('FLOW', 'Flow Rate')} 
+                      iconType={getIconType(sensor.sensor_type)} 
+                    />
+                  ))
+                )}
+              </div>
+            </section>
 
-        {!activeIncident && (
-           <section className="mt-20">
-            <h2 className="text-xs font-bold text-white/20 tracking-[0.3em] mb-8">AI INCIDENT DIRECTOR (LANGGRAPH)</h2>
-            <div className="flex items-center justify-center h-56 rounded-3xl bg-cyan-950/10 border border-cyan-500/10 border-dashed transition-all duration-1000 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-              <p className="text-cyan-500/40 text-sm font-mono tracking-widest text-center leading-relaxed flex flex-col items-center gap-4 z-10">
-                 <ShieldCheck className="w-8 h-8 opacity-50"/>
-                 Systems Nominal. Monitoring sliding window...
-              </p>
-            </div>
-          </section>
+            {!activeIncident && (
+               <section className="mt-20">
+                <h2 className="text-xs font-bold text-white/20 tracking-[0.3em] mb-8">AI INCIDENT DIRECTOR (LANGGRAPH)</h2>
+                <div className="flex items-center justify-center h-56 rounded-3xl bg-cyan-950/10 border border-cyan-500/10 border-dashed transition-all duration-1000 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                  <p className="text-cyan-500/40 text-sm font-mono tracking-widest text-center leading-relaxed flex flex-col items-center gap-4 z-10">
+                     <ShieldCheck className="w-8 h-8 opacity-50"/>
+                     Systems Nominal. Monitoring sliding window...
+                  </p>
+                </div>
+              </section>
+            )}
+          </>
         )}
       </motion.div>
     </main>

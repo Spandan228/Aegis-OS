@@ -12,7 +12,17 @@ export function WebSocketBridge() {
   const reconnectTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const wsUrl = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080/ws";
+    let wsUrl = process.env.NEXT_PUBLIC_WS_URL;
+    if (typeof window !== "undefined") {
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+      if (window.location.hostname !== "localhost" && !process.env.NEXT_PUBLIC_WS_URL) {
+        wsUrl = `${protocol}//${window.location.host}/ws`;
+      } else if (!wsUrl) {
+        wsUrl = "ws://localhost:8080/ws";
+      }
+    } else {
+      wsUrl = wsUrl || "ws://localhost:8080/ws";
+    }
     
     const connect = () => {
       ws.current = new WebSocket(wsUrl);

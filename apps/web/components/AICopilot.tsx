@@ -32,7 +32,7 @@ export function AICopilot() {
 
   const handleResolve = async () => {
     try {
-      await fetch("http://localhost:8001/reset", { method: "POST" });
+      await fetch("/api/simulator/reset", { method: "POST" });
       setActiveIncident(null);
     } catch (err) {
       console.error("Failed to reset simulator", err);

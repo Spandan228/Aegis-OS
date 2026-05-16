@@ -4,10 +4,16 @@ import uuid
 import asyncio
 from typing import TypedDict, List, Dict, Any
 from langgraph.graph import StateGraph, END
+from langchain_groq import ChatGroq
 from langchain_community.chat_models import ChatOllama
 
-ollama_url = os.getenv("OLLAMA_URL", "http://localhost:11434")
-llm = ChatOllama(model="llama3", temperature=0, base_url=ollama_url)
+use_groq = os.getenv("USE_GROQ", "false").lower() == "true"
+if use_groq:
+    llm = ChatGroq(model="llama3-8b-8192", temperature=0)
+else:
+    ollama_url = os.getenv("OLLAMA_URL", "http://localhost:11434")
+    ollama_model = os.getenv("OLLAMA_MODEL", "llama3")
+    llm = ChatOllama(model=ollama_model, temperature=0, base_url=ollama_url)
 
 class AgentState(TypedDict):
     telemetry_window: List[Dict[str, Any]]

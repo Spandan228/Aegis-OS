@@ -1,0 +1,71 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV NODE_VERSION=20.x
+
+# Install basic dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    gnupg \
+    supervisor \
+    postgresql \
+    postgresql-contrib \
+    redis-server \
+    python3.11 \
+    python3.11-venv \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION} | bash - \
+    && apt-get install -y nodejs
+
+# Set work directory
+WORKDIR /app
+
+# Copy everything
+COPY . .
+
+# Setup Postgres user and db
+RUN service postgresql start && \
+    su - postgres -c "psql -c \"CREATE USER aegis_user WITH PASSWORD 'aegis_password';\"" && \
+    su - postgres -c "psql -c \"CREATE DATABASE aegis_db OWNER aegis_user;\""
+
+# Build Web Frontend
+WORKDIR /app/apps/web
+RUN npm install
+RUN npm run build
+
+# Build Python Server
+WORKDIR /app/apps/server
+# Ensure pip is up to date and install requirements
+RUN python3 -m pip install --upgrade pip
+RUN pip3 install -r requirements.txt
+RUN pip3 install chromadb langchain-groq "langchain-community"
+
+# Setup Simulator
+WORKDIR /app/apps/simulator
+RUN pip3 install -r requirements.txt
+
+WORKDIR /app
+
+# Setup supervisor configuration
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Setup Start Script
+COPY start_hf.sh /app/start_hf.sh
+RUN chmod +x /app/start_hf.sh
+
+# Expose Hugging Face Port
+EXPOSE 7860
+
+# Environment variables
+ENV PORT=7860
+ENV REDIS_URL="redis://localhost:6379/0"
+ENV POSTGRES_URL="postgresql://aegis_user:aegis_password@localhost:5432/aegis_db"
+ENV CHROMADB_URL="http://localhost:8000"
+# Set to 'true' to use fast Groq inference instead of local CPU Ollama
+ENV USE_GROQ="true"
+
+CMD ["/app/start_hf.sh"]

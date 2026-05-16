@@ -13,9 +13,11 @@ interface Props {
 export function SensorWidget({ sensor_id, label, iconType }: Props) {
   const sensorData = useAegisStore((state) => state.telemetry[sensor_id]);
 
+  const isEditMode = useAegisStore((state) => state.isEditMode);
+
   if (!sensorData) {
     return (
-      <div className="flex h-40 items-center justify-center rounded-2xl bg-white/[0.01] backdrop-blur-xl border border-white/5">
+      <div className={`flex h-40 items-center justify-center rounded-2xl bg-white/[0.01] backdrop-blur-xl border ${isEditMode ? 'border-dashed border-cyan-500/50' : 'border-white/5'}`}>
         <p className="text-white/20 text-sm animate-pulse font-mono tracking-widest">AWAITING {label.toUpperCase()}</p>
       </div>
     );
@@ -39,7 +41,7 @@ export function SensorWidget({ sensor_id, label, iconType }: Props) {
       y: 0,
       filter: "brightness(1) hue-rotate(0deg)",
       boxShadow: "0px 0px 0px rgba(34,211,238,0)",
-      borderColor: "rgba(255,255,255,0.05)",
+      borderColor: isEditMode ? "rgba(34, 211, 238, 0.5)" : "rgba(255,255,255,0.05)",
       transition: { duration: 0.5 }
     },
     critical: {
@@ -79,23 +81,29 @@ export function SensorWidget({ sensor_id, label, iconType }: Props) {
   return (
     <motion.div
       variants={widgetVariants}
-      animate={isCritical ? "critical" : "nominal"}
-      className={`relative flex flex-col justify-between p-8 rounded-2xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] backdrop-blur-2xl border border-white/5 overflow-hidden ${
-        isCritical ? "bg-red-950/20" : ""
-      }`}
+      animate={isCritical && !isEditMode ? "critical" : "nominal"}
+      className={`relative flex flex-col justify-between p-8 rounded-2xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] backdrop-blur-2xl border overflow-hidden ${
+        isCritical && !isEditMode ? "bg-red-950/20" : ""
+      } ${isEditMode ? 'border-dashed cursor-move hover:bg-cyan-950/20 transition-colors' : 'border-white/5'}`}
     >
       <div className="flex items-center justify-between mb-8 z-10">
         <div className="flex items-center gap-3">
           {renderIcon()}
           <span className="text-sm font-semibold text-white/70 tracking-wide">{label}</span>
         </div>
-        <span className={`text-xs px-3 py-1 font-mono tracking-widest rounded-full border ${
-          isCritical 
-            ? "bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.4)]" 
-            : "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
-        }`}>
-          {sensorData.status.toUpperCase()}
-        </span>
+        {isEditMode ? (
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded bg-white/5 text-white/40 hover:text-white/80 cursor-pointer transition-colors"><Activity className="w-4 h-4" /></div>
+          </div>
+        ) : (
+          <span className={`text-xs px-3 py-1 font-mono tracking-widest rounded-full border ${
+            isCritical 
+              ? "bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.4)]" 
+              : "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
+          }`}>
+            {sensorData.status.toUpperCase()}
+          </span>
+        )}
       </div>
 
       <div className="flex items-end gap-3 z-10">

@@ -26,9 +26,13 @@ interface AegisState {
   globalStatus: 'NOMINAL' | 'CRITICAL';
   activeIncident: AIIncidentReport | null;
   connectionStatus: 'CONNECTED' | 'DISCONNECTED';
+  userRole: 'OPERATOR' | 'MANAGER';
+  isEditMode: boolean;
   updateTelemetry: (data: SensorTelemetry) => void;
   setActiveIncident: (incident: AIIncidentReport | null) => void;
   setConnectionStatus: (status: 'CONNECTED' | 'DISCONNECTED') => void;
+  setUserRole: (role: 'OPERATOR' | 'MANAGER') => void;
+  setIsEditMode: (isEdit: boolean) => void;
 }
 
 export const useAegisStore = create<AegisState>((set) => ({
@@ -36,6 +40,8 @@ export const useAegisStore = create<AegisState>((set) => ({
   globalStatus: 'NOMINAL',
   activeIncident: null,
   connectionStatus: 'DISCONNECTED', // Initialize as disconnected until WS opens
+  userRole: 'OPERATOR',
+  isEditMode: false,
   updateTelemetry: (data) => set((state) => {
     const updatedTelemetry = { ...state.telemetry, [data.sensor_id]: data };
     const isCritical = Object.values(updatedTelemetry).some(
@@ -48,4 +54,6 @@ export const useAegisStore = create<AegisState>((set) => ({
   }),
   setActiveIncident: (incident) => set({ activeIncident: incident }),
   setConnectionStatus: (status) => set({ connectionStatus: status }),
+  setUserRole: (role) => set({ userRole: role }),
+  setIsEditMode: (isEdit) => set({ isEditMode: isEdit }),
 }));

@@ -41,8 +41,15 @@ services:
     volumes:
       - ollama_data:/root/.ollama
     restart: unless-stopped
-    # Default setup for CPU compatibility (Any computer).
-    # For GPU acceleration (e.g. RTX 4070), please use docker-compose.gpu.yml instead.
+    # High-Performance setup for GPU (e.g. RTX 4070)
+    # Requires Docker NVIDIA Toolkit installed on the host.
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   server:
     build:
