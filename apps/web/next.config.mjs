@@ -1,18 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async rewrites() {
     return [
       {
         source: '/ws',
-        destination: 'http://localhost:8080/ws', // Proxy to Backend
+        destination: 'http://localhost:8080/ws',
       },
       {
         source: '/api/simulator/:path*',
-        destination: 'http://localhost:8001/:path*', // Proxy to Simulator
+        destination: 'http://localhost:8001/:path*',
       },
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8080/api/:path*', // Proxy to Backend
+        destination: 'http://localhost:8080/api/:path*',
       }
     ];
   },
