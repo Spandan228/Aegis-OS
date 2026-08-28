@@ -2,13 +2,16 @@
 venv/
 env/
 .env
+.env.local
+.env.*.local
 
-# Node
+# Node & Next.js Build Artifacts
 node_modules/
 .next/
 out/
 build/
 dist/
+*.tsbuildinfo
 
 # Python
 __pycache__/
@@ -21,8 +24,10 @@ __pycache__/
 .idea/
 .DS_Store
 Thumbs.db
+*.log
 
 # Project Specific
 redis/
 redis.zip
 server_debug.log
+

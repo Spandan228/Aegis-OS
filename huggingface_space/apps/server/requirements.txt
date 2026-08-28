@@ -1,8 +1,0 @@
-fastapi
-uvicorn
-redis
-websockets
-pydantic
-langgraph
-langchain
-langchain-community
