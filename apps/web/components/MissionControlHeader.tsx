@@ -94,7 +94,7 @@ export function MissionControlHeader() {
         </div>
 
         {/* Center: Station Switcher */}
-        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xl overflow-x-auto">
+        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xl overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {stations.map((st) => (
             <button
               key={st.id}

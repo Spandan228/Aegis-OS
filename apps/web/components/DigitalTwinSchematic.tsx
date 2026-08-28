@@ -257,13 +257,15 @@ export function DigitalTwinSchematic() {
           />
 
           {/* Rotating Impeller Turbine Blades */}
-          <g 
-            transform="translate(450, 180)"
-            style={{
-              animation: `spin ${rotorSpeed}s linear infinite`,
-              transformOrigin: "center",
-            }}
-          >
+          <g transform="translate(450, 180)">
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              from="0"
+              to="360"
+              dur={`${rotorSpeed}s`}
+              repeatCount="indefinite"
+            />
             {/* Blade 1 */}
             <path d="M 0 0 C 15 -25 35 -35 50 -30 C 40 -15 25 0 0 0" fill={isCritical ? "#FF0055" : "#00F0FF"} opacity="0.9" />
             {/* Blade 2 */}
