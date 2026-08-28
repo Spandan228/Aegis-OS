@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ AEGIS OS 2.0
+# 🛡️ AEGIS OS
 ### Tactical Cyber-Industrial Mission Control & Alarm-Fatigue Eradication Engine
 
 *Autonomous AI-Assisted Operational Intelligence for Mission-Critical Infrastructure*
@@ -139,7 +139,7 @@ flowchart TD
 ## 🔬 Deep Dive: Subsystem Architecture
 
 ### 1. Interactive Digital Twin & Hydraulic Schematic
-Located in [`apps/web/components/DigitalTwinSchematic.tsx`](file:///d:/project%20new/apps/web/components/DigitalTwinSchematic.tsx), the schematic models **Pump Station Alpha**:
+Located in [`apps/web/components/DigitalTwinSchematic.tsx`], the schematic models **Pump Station Alpha**:
 - **Dynamic Fluid Velocity**: Animated SVG pipe particles calculate velocity on the fly. During severe cavitation, fluid velocity drops from nominal speed to a near-stall, alerting operators visually.
 - **Rotor Dynamics**: Rotating impeller turbine blades whose angular velocity and vibration frequency reflect physical load and RPM.
 - **Thermal Heat Aura**: Dynamic radial gradient radiating outward from the central pump volute shell that blooms from cool blue to glowing crimson (`#FF0055`) during thermal runaway.
@@ -151,7 +151,7 @@ Located in [`apps/web/components/DigitalTwinSchematic.tsx`](file:///d:/project%2
 ---
 
 ### 2. High-Density Telemetry Waveforms & Sparklines
-Located in [`apps/web/components/SensorWidget.tsx`](file:///d:/project%20new/apps/web/components/SensorWidget.tsx):
+Located in [`apps/web/components/SensorWidget.tsx`]:
 - **Continuous Historical Waveform**: Real-time SVG sparkline tracking the sliding 40-frame telemetry window with safety threshold limit lines and dynamic area fill gradients.
 - **Rate-of-Change ($\Delta/s$)**: Calculates instantaneous mathematical derivatives ($dy/dt$) between successive frames, alerting operators to rapid pressure surges before threshold limits are breached.
 - **Statistical Ribbon**: Micro-badges tracking real-time Minimum, Rolling Average, and Maximum values.
@@ -160,15 +160,15 @@ Located in [`apps/web/components/SensorWidget.tsx`](file:///d:/project%20new/app
 ---
 
 ### 3. LangGraph Autonomous AI Incident Director
-Located in [`apps/server/ai_agent.py`](file:///d:/project%20new/apps/server/ai_agent.py):
+Located in [`apps/server/ai_agent.py`]:
 - **Node 1 (`node_analyze_root_cause`)**: Consumes the sliding 20-frame context window and evaluates multi-sensor coupling. Enforces clinical terminology (*Supercritical Cavitation*, *Thermal Runaway*, *Transient Shockwaves*, *Upstream Constriction*) and outputs Confidence Scores and Time-to-Failure (TTF) estimates.
-- **Node 2 (`node_direct_ui`)**: Structures the unstructured reasoning output into strict JSON adhering to the [`AIIncidentReport`](file:///d:/project%20new/packages/shared/schemas.py) Pydantic contract.
-- **Tactical Copilot Interface ([`AICopilot.tsx`](file:///d:/project%20new/apps/web/components/AICopilot.tsx))**: Slide-out tactical drawer featuring typewriter situation summaries, root-cause breakdowns, checkable mitigation checklists, and an emergency **"RESOLVE & RESTORE NOMINAL STATE"** trigger.
+- **Node 2 (`node_direct_ui`)**: Structures the unstructured reasoning output into strict JSON adhering to the [`AIIncidentReport`] Pydantic contract.
+- **Tactical Copilot Interface ([`AICopilot.tsx`])**: Slide-out tactical drawer featuring typewriter situation summaries, root-cause breakdowns, checkable mitigation checklists, and an emergency **"RESOLVE & RESTORE NOMINAL STATE"** trigger.
 
 ---
 
 ### 4. Procedural Web Audio Synthesis Engine
-Located in [`apps/web/lib/audioEngine.ts`](file:///d:/project%20new/apps/web/lib/audioEngine.ts):
+Located in [`apps/web/lib/audioEngine.ts`]:
 - Zero external audio files or dependencies. Generates procedural waveforms in real time via the browser's native `AudioContext`:
   - **Tactile Click**: High-frequency sine burst for crisp button feedback.
   - **Switch Tone**: Dual-frequency triangle sweep for valve toggles and station switching.
@@ -178,11 +178,11 @@ Located in [`apps/web/lib/audioEngine.ts`](file:///d:/project%20new/apps/web/lib
 ---
 
 ### 5. Executive Manager KPI Dashboard
-Located in [`apps/web/components/ManagerView.tsx`](file:///d:/project%20new/apps/web/components/ManagerView.tsx):
+Located in [`apps/web/components/ManagerView.tsx`]:
 - **OEE Composite Metric**: Real-time breakdown of Availability Factor, Performance Efficiency, and Quality Tolerance.
 - **Financial Downtime Loss Accumulator**: Live dollar counter ($/sec) calculating financial loss accumulation during unplanned equipment downtime.
 - **Alarm Suppression Ratio**: Visual proof of alarm fatigue elimination ($>98\%$ of raw sensor noise filtered into high-signal incident reports).
-- **Audit Log Exporter ([`IncidentHistoryDrawer.tsx`](file:///d:/project%20new/apps/web/components/IncidentHistoryDrawer.tsx))**: Chronological blackbox event timeline with 1-click JSON export.
+- **Audit Log Exporter ([`IncidentHistoryDrawer.tsx`])**: Chronological blackbox event timeline with 1-click JSON export.
 
 ---
 
@@ -388,7 +388,3 @@ aegis-os/
 Distributed under the **MIT License**. See [`LICENSE`](file:///d:/project%20new/LICENSE) for full details.
 
 ---
-
-<div align="center">
-  <sub>Built with mission-critical precision for operations engineers, plant managers, and high-stakes infrastructure control.</sub>
-</div>
