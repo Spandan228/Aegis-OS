@@ -261,10 +261,11 @@ export function DigitalTwinSchematic() {
             <animateTransform
               attributeName="transform"
               type="rotate"
-              from="0"
-              to="360"
+              from="0 0 0"
+              to="360 0 0"
               dur={`${rotorSpeed}s`}
               repeatCount="indefinite"
+              additive="sum"
             />
             {/* Blade 1 */}
             <path d="M 0 0 C 15 -25 35 -35 50 -30 C 40 -15 25 0 0 0" fill={isCritical ? "#FF0055" : "#00F0FF"} opacity="0.9" />
