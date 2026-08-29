@@ -50,12 +50,12 @@ Modern industrial environments (e.g., nuclear power generation, chemical process
 ## ⚡ The Cognitive Crisis: Eradicating Alarm Fatigue
 
 ```
-TRADITIONAL HMI (Alarm Fatigue)             AEGIS OS 2.0 (Cognitive Synthesis)
+  TRADITIONAL HMI (Alarm Fatigue)                AEGIS OS (Cognitive Synthesis)
 ┌──────────────────────────────────────┐     ┌──────────────────────────────────────┐
-│ [!] Sensor 104 Pressure High        │     │  AI INCIDENT DIRECTOR (LANGGRAPH)    │
-│ [!] Sensor 105 Pressure High        │     │  ──────────────────────────────────  │
-│ [!] Sensor 106 Temp Warning         │ ──> │  🚨 THERMAL RUNAWAY & CAVITATION     │
-│ [!] Sensor 107 Flow Rate Low        │     │  Confidence: 98.4% | TTF: 35 Seconds │
+│ [!] Sensor 104 Pressure High         │     │  AI INCIDENT DIRECTOR (LANGGRAPH)    │
+│ [!] Sensor 105 Pressure High         │     │  ──────────────────────────────────  │
+│ [!] Sensor 106 Temp Warning          │ ──> │  🚨 THERMAL RUNAWAY & CAVITATION     │
+│ [!] Sensor 107 Flow Rate Low         │     │  Confidence: 98.4% | TTF: 35 Seconds │
 │ [!] Sensor 108 Valve Backpressure    │     │  Root Cause: Upstream intake drop    │
 │ [!] Sensor 109 Vibration Spike       │     │  Action: Engage Bypass Valve V-102   │
 │ ... 240+ raw alerts/minute           │     │  Status: 98.8% Alarm Fatigue Filtered│
